@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player1Blocks : MonoBehaviour
 {
+    public GameObject tetromino;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,22 +17,22 @@ public class Player1Blocks : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.W))
         {
-            transform.Translate(0, 1, 0);
-        }
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            transform.Translate(-1, 0, 0);
-
+            tetromino.transform.position += new Vector3(0, 1, 0);
         }
         if(Input.GetKeyDown(KeyCode.S))
         {
-            transform.Translate(0, -1, 0);
-
+            tetromino.transform.position += new Vector3(0, -1, 0);
         }
-        if(Input.GetKeyDown(KeyCode.D))
+        if(Input.GetKeyDown(KeyCode.A))
         {
-            transform.Translate(1, 0, 0);
-
+            tetromino.transform.eulerAngles -= new Vector3(0,0, 90);
+        }
+    }
+    void DestroyChildren()
+    {
+        foreach(Transform block in tetromino.transform)
+        {
+            Destroy(block.gameObject);
         }
     }
 }
