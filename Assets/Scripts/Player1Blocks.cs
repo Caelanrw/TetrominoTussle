@@ -47,22 +47,24 @@ public class Player1Blocks : MonoBehaviour
                 }
                 else
                 {
-                    active = false;
+                    active = false; //if not droppable it sets
                 }
             }
         }
     }
 
-    bool DropCheck()
+    bool DropCheck() //checks if it possible for the tetromino to continue dropping
     {
-        if(tetromino.transform.position.x != 19.5)
+        foreach(Transform block in tetromino.transform)
         {
-            return true;
+            
+            if(block.transform.position.x == 19.5)
+            {
+                return false;
+            }
         }
-        else
-        {
-            return false;
-        }
+
+        return true;
     }
 
    /* void DestroyChildren() //Not functional just reference/test code
