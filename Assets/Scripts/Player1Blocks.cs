@@ -55,7 +55,7 @@ public class Player1Blocks : MonoBehaviour
 
     bool DropCheck()
     {
-        if(tetromino.transform.position.x != 20)
+        if(tetromino.transform.position.x != 19.5)
         {
             return true;
         }
