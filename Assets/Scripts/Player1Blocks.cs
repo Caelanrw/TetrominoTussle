@@ -5,8 +5,7 @@ using UnityEngine;
 public class Player1Blocks : MonoBehaviour
 {
     public GameObject tetromino; //parent tetromino game object
-    public bool active;
-    public bool droppable;
+    public bool active, droppable, movable, rotatable;
 
     // Start is called before the first frame update
     void Start()
@@ -58,7 +57,7 @@ public class Player1Blocks : MonoBehaviour
         foreach(Transform block in tetromino.transform)
         {
             
-            if(block.transform.position.x == 19.5)
+            if(block.transform.position.x == 20)
             {
                 return false;
             }
