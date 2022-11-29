@@ -29,7 +29,7 @@ public class Gameplay : MonoBehaviour
         switch(randomTetromino)
         {
             case(1):
-                Instantiate(O, new Vector3((float)0.5, (float)5.5, 0), Quaternion.identity);
+                Instantiate(O, new Vector3((float)2.5, (float)5.5, 0), Quaternion.identity);
                 break;
             case(2):
                 Instantiate(J, new Vector3(1, 5, 0), Quaternion.identity);
@@ -50,5 +50,33 @@ public class Gameplay : MonoBehaviour
                 Instantiate(I, new Vector3(1, 5, 0), Quaternion.identity);
                 break;
         }
+    }
+
+    public void ClearColumn(int column) //clear complete columns
+    {
+        for(int i = 0; i < 10; i++) //check if whole column is complete
+        {
+            if(blocks[i, column] == null)
+            {
+                return; //leave function if there is no block in any spot in the column
+            }
+        }
+
+        for(int i = 0; i < 10; i++)
+        {
+            Destroy(blocks[i, column].gameObject); //destroy the blocks in the completed column
+
+            for(int j = (column - 1); j >= 0; j--) // loops through blocks in columns to left of cleared column
+            {
+                if(blocks[i, j] != null) //if there is a set block in that space move it to the right
+                {
+                    blocks[i, j + 1] = blocks[i, j];
+                    blocks[i, j + 1].gameObject.transform.position += new Vector3(1, 0, 0);
+                    blocks[i, j] = null;
+                }
+
+            }
+        }
+        return;
     }
 }
