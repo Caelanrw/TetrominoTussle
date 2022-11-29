@@ -18,6 +18,7 @@ public class Player1Blocks : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if(active) //only allows movement for active tetromino
         {
             //movement
@@ -29,6 +30,11 @@ public class Player1Blocks : MonoBehaviour
                 {
                     tetromino.transform.position += new Vector3(0, 1, 0);
                 }
+
+                foreach(Transform block in tetromino.transform)
+                {
+                    Debug.Log(block.transform.position.y);
+                }
             }
             if(Input.GetKeyDown(KeyCode.S)) //move tetromino down
             {
@@ -37,6 +43,11 @@ public class Player1Blocks : MonoBehaviour
                 if(movable)
                 {
                     tetromino.transform.position += new Vector3(0, -1, 0);
+                }
+                
+                foreach(Transform block in tetromino.transform)
+                {
+                    Debug.Log(block.transform.position.y);
                 }
             }
 
@@ -70,11 +81,11 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            if(block.transform.position.x == 20)
+            if(Mathf.Round(block.transform.position.x) == 19) //can't drop if block is at the divider
             {
                 return false;
             }
-            else if(Gameplay.blocks[(int)block.transform.position.y, (int)(block.transform.position.x + 1)] != null)
+            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x + 1)] != null) //can't drop if there is a set block in the way
             {
                 return false;
             }
@@ -87,7 +98,11 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            if(block.transform.position.y == 10)
+            if(Mathf.Round(block.transform.position.y) == 9)
+            {
+                return false;
+            }
+            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y + 1), (int)Mathf.Round(block.transform.position.x)] != null)
             {
                 return false;
             }
@@ -100,7 +115,11 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            if(block.transform.position.y == 1)
+            if(Mathf.Round(block.transform.position.y) == 0)
+            {
+                return false;
+            }
+            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y - 1), (int)Mathf.Round(block.transform.position.x)] != null)
             {
                 return false;
             }

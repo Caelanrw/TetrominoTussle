@@ -29,25 +29,25 @@ public class Gameplay : MonoBehaviour
         switch(randomTetromino)
         {
             case(1):
-                Instantiate(O, new Vector3((float)0.5, 5, 0), Quaternion.identity);
+                Instantiate(O, new Vector3((float)0.5, (float)5.5, 0), Quaternion.identity);
                 break;
             case(2):
-                Instantiate(J, new Vector3(0, 5, 0), Quaternion.identity);
+                Instantiate(J, new Vector3(1, 5, 0), Quaternion.identity);
                 break;
             case(3):
-                Instantiate(L, new Vector3(0, 5, 0), Quaternion.identity);
+                Instantiate(L, new Vector3(1, 5, 0), Quaternion.identity);
                 break;
             case(4):
-                Instantiate(S, new Vector3(0, 5, 0), Quaternion.identity);
+                Instantiate(S, new Vector3(1, 5, 0), Quaternion.identity);
                 break;
             case(5):
-                Instantiate(Z, new Vector3(0, 5, 0), Quaternion.identity);
+                Instantiate(Z, new Vector3(1, 5, 0), Quaternion.identity);
                 break;
             case(6):
-                Instantiate(T, new Vector3(0, 5, 0), Quaternion.identity);
+                Instantiate(T, new Vector3(1, 5, 0), Quaternion.identity);
                 break;
             case(7):
-                Instantiate(I, new Vector3(0, 5, 0), Quaternion.identity);
+                Instantiate(I, new Vector3(1, 5, 0), Quaternion.identity);
                 break;
         }
     }
