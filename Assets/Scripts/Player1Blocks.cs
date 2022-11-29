@@ -31,10 +31,6 @@ public class Player1Blocks : MonoBehaviour
                     tetromino.transform.position += new Vector3(0, 1, 0);
                 }
 
-                foreach(Transform block in tetromino.transform)
-                {
-                    Debug.Log(block.transform.position.y);
-                }
             }
             if(Input.GetKeyDown(KeyCode.S)) //move tetromino down
             {
@@ -44,17 +40,17 @@ public class Player1Blocks : MonoBehaviour
                 {
                     tetromino.transform.position += new Vector3(0, -1, 0);
                 }
-                
-                foreach(Transform block in tetromino.transform)
-                {
-                    Debug.Log(block.transform.position.y);
-                }
             }
 
             //rotation
             if(Input.GetKeyDown(KeyCode.A)) //rotate tetromino 90 degrees
             {
                 tetromino.transform.eulerAngles -= new Vector3(0, 0, 90);
+
+                foreach(Transform block in tetromino.transform) //accounts for small rounding errors from rotations
+                {
+                    block.transform.position = new Vector3(Mathf.Round(block.transform.position.x), Mathf.Round(block.transform.position.y), 0);
+                }
             }
 
             //dropping
@@ -85,7 +81,7 @@ public class Player1Blocks : MonoBehaviour
             {
                 return false;
             }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x + 1)] != null) //can't drop if there is a set block in the way
+            else if(Gameplay.blocks[(int)block.transform.position.y, (int)block.transform.position.x + 1] != null) //can't drop if there is a set block in the way
             {
                 return false;
             }
@@ -102,7 +98,7 @@ public class Player1Blocks : MonoBehaviour
             {
                 return false;
             }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y + 1), (int)Mathf.Round(block.transform.position.x)] != null)
+            else if(Gameplay.blocks[(int)block.transform.position.y + 1, (int)block.transform.position.x] != null)
             {
                 return false;
             }
@@ -119,7 +115,7 @@ public class Player1Blocks : MonoBehaviour
             {
                 return false;
             }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y - 1), (int)Mathf.Round(block.transform.position.x)] != null)
+            else if(Gameplay.blocks[(int)block.transform.position.y - 1, (int)block.transform.position.x] != null)
             {
                 return false;
             }
