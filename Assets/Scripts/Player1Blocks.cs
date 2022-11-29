@@ -74,6 +74,10 @@ public class Player1Blocks : MonoBehaviour
             {
                 return false;
             }
+            else if(Gameplay.blocks[(int)block.transform.position.y, (int)(block.transform.position.x + 1)] != null)
+            {
+                return false;
+            }
         }
 
         return true;

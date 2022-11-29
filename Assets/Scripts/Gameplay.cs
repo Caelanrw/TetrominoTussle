@@ -6,6 +6,7 @@ public class Gameplay : MonoBehaviour
 {
     public static Transform[,] blocks; //2 dimensional array to store set block location
     public GameObject I, J, L, O, S, T, Z; //tetromino prefabs
+    int randomTetromino;
 
     void Start()
     {
@@ -22,6 +23,32 @@ public class Gameplay : MonoBehaviour
 
     public void SpawnTetromino()
     {
-        Instantiate(I, new Vector3(0, 5, 0), Quaternion.identity); //spawn 1 tetromino at point (0,5)
+        randomTetromino = Random.Range(1,8); //Generate random number between 1 and 7
+
+        //spawn random tetromino based on number generated
+        switch(randomTetromino)
+        {
+            case(1):
+                Instantiate(O, new Vector3((float)0.5, 5, 0), Quaternion.identity);
+                break;
+            case(2):
+                Instantiate(J, new Vector3(0, 5, 0), Quaternion.identity);
+                break;
+            case(3):
+                Instantiate(L, new Vector3(0, 5, 0), Quaternion.identity);
+                break;
+            case(4):
+                Instantiate(S, new Vector3(0, 5, 0), Quaternion.identity);
+                break;
+            case(5):
+                Instantiate(Z, new Vector3(0, 5, 0), Quaternion.identity);
+                break;
+            case(6):
+                Instantiate(T, new Vector3(0, 5, 0), Quaternion.identity);
+                break;
+            case(7):
+                Instantiate(I, new Vector3(0, 5, 0), Quaternion.identity);
+                break;
+        }
     }
 }
