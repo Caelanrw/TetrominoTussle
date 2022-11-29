@@ -5,12 +5,14 @@ using UnityEngine;
 public class Player1Blocks : MonoBehaviour
 {
     public GameObject tetromino; //parent tetromino game object
-    public bool active, droppable, movable, rotatable;
+    bool active, droppable, movable, rotatable;
+    Gameplay gameControl;
 
     // Start is called before the first frame update
     void Start()
     {
         active = true;
+        gameControl = FindObjectOfType<Gameplay>(); 
     }
 
     // Update is called once per frame
@@ -21,17 +23,27 @@ public class Player1Blocks : MonoBehaviour
             //movement
             if(Input.GetKeyDown(KeyCode.W)) //move tetromino up
             {
-                tetromino.transform.position += new Vector3(0, 1, 0);
+                movable = MovementCheckUp();
+
+                if(movable)
+                {
+                    tetromino.transform.position += new Vector3(0, 1, 0);
+                }
             }
             if(Input.GetKeyDown(KeyCode.S)) //move tetromino down
             {
-                tetromino.transform.position += new Vector3(0, -1, 0);
+                movable = MovementCheckDown();
+
+                if(movable)
+                {
+                    tetromino.transform.position += new Vector3(0, -1, 0);
+                }
             }
 
             //rotation
             if(Input.GetKeyDown(KeyCode.A)) //rotate tetromino 90 degrees
             {
-                tetromino.transform.eulerAngles -= new Vector3(0,0, 90);
+                tetromino.transform.eulerAngles -= new Vector3(0, 0, 90);
             }
 
             //dropping
@@ -47,6 +59,8 @@ public class Player1Blocks : MonoBehaviour
                 else
                 {
                     active = false; //if not droppable it sets
+                    SetBlocks();
+                    gameControl.SpawnTetromino();
                 }
             }
         }
@@ -56,7 +70,6 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            
             if(block.transform.position.x == 20)
             {
                 return false;
@@ -64,6 +77,40 @@ public class Player1Blocks : MonoBehaviour
         }
 
         return true;
+    }
+
+    bool MovementCheckUp()
+    {
+        foreach(Transform block in tetromino.transform)
+        {
+            if(block.transform.position.y == 10)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool MovementCheckDown()
+    {
+        foreach(Transform block in tetromino.transform)
+        {
+            if(block.transform.position.y == 1)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    void SetBlocks()
+    {
+        foreach(Transform block in tetromino.transform)
+        {
+            Gameplay.blocks[(int)block.transform.position.y, (int)block.transform.position.x] = block;
+        }
     }
 
    /* void DestroyChildren() //Not functional just reference/test code
