@@ -32,12 +32,8 @@ public class Player1Blocks : MonoBehaviour
                     tetromino.transform.position += new Vector3(0, 1, 0);
                 }
 
-                foreach(Transform block in tetromino.transform)
-                {
-                Debug.Log(block.transform.position.y);
-                }
-
             }
+            
             if(Input.GetKeyDown(KeyCode.S)) //move tetromino down
             {
                 movable = MovementCheckDown();
@@ -46,21 +42,17 @@ public class Player1Blocks : MonoBehaviour
                 {
                     tetromino.transform.position += new Vector3(0, -1, 0);
                 }
-
-                foreach(Transform block in tetromino.transform)
-                {
-                Debug.Log(block.transform.position.y);
-                }
             }
 
             //rotation
             if(Input.GetKeyDown(KeyCode.A)) //rotate tetromino 90 degrees
             {
-                tetromino.transform.eulerAngles -= new Vector3(0, 0, 90);
+                tetromino.transform.eulerAngles -= new Vector3(0, 0, 90); //rotate tetromino
 
-                foreach(Transform block in tetromino.transform)
+                rotatable = RotationCheck(); //check if that rotation was valid
+                if(!rotatable)
                 {
-                Debug.Log(block.transform.position.y);
+                    tetromino.transform.eulerAngles += new Vector3(0, 0, 90); //revert rotation if that rotation was invalid;
                 }
             }
 
@@ -164,6 +156,27 @@ public class Player1Blocks : MonoBehaviour
         }
 
         return true;
+    }
+
+    bool RotationCheck() //check if rotations are valid
+    {
+        foreach(Transform block in tetromino.transform)
+        {
+            if(Mathf.Round(block.transform.position.y) < 0) //rotation invalid if block is below playfield
+            {
+                return false;
+            }
+            else if(Mathf.Round(block.transform.position.y) > 9) //rotation invalid if block is above playfield
+            {
+                return false;
+            }
+            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] != null) //rotation invalid if block intersects set block
+            {
+                return false;
+            }
+        }
+
+        return true; //if none of above are true the rotation is valid
     }
 
     void SetBlocks()
