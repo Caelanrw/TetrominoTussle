@@ -6,6 +6,7 @@ public class Player1Blocks : MonoBehaviour
 {
     public GameObject tetromino; //parent tetromino game object
     bool active, droppable, movable, rotatable;
+    int count = 0;
     Gameplay gameControl;
 
     // Start is called before the first frame update
@@ -87,7 +88,31 @@ public class Player1Blocks : MonoBehaviour
                     gameControl.SpawnTetromino(); //spawn new tetromino
                 }
             }
+
+             if((count%20) == 0) //Normal drop
+            {
+                droppable = DropCheck();
+                
+                if(droppable)
+                {
+                    tetromino.transform.position += new Vector3(1, 0, 0);
+                }
+                else
+                {
+                    active = false; //if not droppable it sets
+
+                    SetBlocks(); //register location of inactive blocks
+
+                    foreach(Transform block in tetromino.transform)
+                    {
+                        gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
+                    }
+
+                    gameControl.SpawnTetromino(); //spawn new tetromino
+                }
+            }
         }
+        count++;
     }
 
     bool DropCheck() //checks if it possible for the tetromino to continue dropping
