@@ -58,31 +58,13 @@ public class Player1Blocks : MonoBehaviour
 
             //dropping
             
-            if(Input.GetKey(KeyCode.D)) //fast drop
+            if(Input.GetKey(KeyCode.D) || count >= Gameplay.timer) //fast drop
             {
-                droppable = DropCheck();
-                
-                if(droppable)
+                if(count >= Gameplay.timer)
                 {
-                    tetromino.transform.position += new Vector3(1, 0, 0);
+                    count = 0;
                 }
-                else
-                {
-                    active = false; //if not droppable it sets
 
-                    SetBlocks(); //register location of inactive blocks
-
-                    foreach(Transform block in tetromino.transform)
-                    {
-                        gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
-                    }
-
-                    gameControl.SpawnTetromino(); //spawn new tetromino
-                }
-            }
-
-             if((count%20) == 0) //Normal drop
-            {
                 droppable = DropCheck();
                 
                 if(droppable)
@@ -104,7 +86,7 @@ public class Player1Blocks : MonoBehaviour
                 }
             }
         }
-        count++;
+        count++; //increment drop count
     }
 
     bool DropCheck() //checks if it possible for the tetromino to continue dropping
@@ -184,6 +166,11 @@ public class Player1Blocks : MonoBehaviour
         foreach(Transform block in tetromino.transform)
         {
             Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] = block;
+        }
+
+        if(Gameplay.timer > 1)
+        {
+            Gameplay.timer -= 0.25; //speed up blocks slightly whenever a tetromino is set
         }
     }
 
