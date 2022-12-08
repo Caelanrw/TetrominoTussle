@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player1Blocks : MonoBehaviour
 {
     public GameObject tetromino; //parent tetromino game object
-    bool active, droppable, movable, rotatable;
+    bool active, droppable, movable, rotatable, columnCleared;
     int count = 0;
     Gameplay gameControl;
 
@@ -19,13 +19,11 @@ public class Player1Blocks : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!Pause.is_paused)
-        {
-        if(active) //only allows movement for active tetromino
+        if(active && !Pause.is_paused) //only allows movement for active tetromino while not paused
         {
             //movement
             if(Input.GetKeyDown(KeyCode.W)) //move tetromino up
-            {
+            {   
                 movable = MovementCheckUp();
 
                 if(movable)
@@ -59,7 +57,7 @@ public class Player1Blocks : MonoBehaviour
 
             //dropping
             
-            if(Input.GetKey(KeyCode.D) || count >= Gameplay.timer) //fast drop
+            if(Input.GetKey(KeyCode.D) || count >= Gameplay.timer)
             {
                 if(count >= Gameplay.timer)
                 {
@@ -80,14 +78,18 @@ public class Player1Blocks : MonoBehaviour
 
                     foreach(Transform block in tetromino.transform)
                     {
-                        gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
+                        columnCleared = gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
+
+                        if(columnCleared)
+                        {
+                            ShiftBlocks((int)Mathf.Round(block.transform.position.x));
+                        }
                     }
 
-                    gameControl.SpawnTetromino(); //spawn new tetromino
+                    gameControl.P1SpawnTetromino(); //spawn new tetromino
                 }
             }
-        }
-        count++;
+            count++;
         }
     }
 
@@ -176,11 +178,19 @@ public class Player1Blocks : MonoBehaviour
         }
     }
 
-   /* void DestroyChildren() //Not functional just reference/test code
+    void ShiftBlocks(int column)
     {
-        foreach(Transform block in tetromino.transform)
+        for(int i = 0; i < 10; i++)
         {
-            Destroy(block.gameObject);
+            for(int j = (column - 1); j >= 0; j--) // loops through blocks in columns to left of cleared column
+            {
+                if(Gameplay.blocks[i, j] != null) //if there is a set block in that space move it to the right
+                {
+                    Gameplay.blocks[i, j + 1] = Gameplay.blocks[i, j];
+                    Gameplay.blocks[i, j + 1].gameObject.transform.position += new Vector3(1, 0, 0);
+                    Gameplay.blocks[i, j] = null;
+                }
+            }
         }
-    }*/
+    }
 }

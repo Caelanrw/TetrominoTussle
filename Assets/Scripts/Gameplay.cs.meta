@@ -3,7 +3,21 @@ guid: 4f9dab400a1f87e47a1df511e092b695
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - P1I: {fileID: 4887611876054313707, guid: 4affc24bc062ccd4dbfce1397eb7ade3, type: 3}
+  - P1J: {fileID: 5952001633576643552, guid: 252cd20568fc52e45b28f84dd11546db, type: 3}
+  - P1L: {fileID: 8837112813440301880, guid: 984fd02f658988c4f8344b3edcc9ce83, type: 3}
+  - P1O: {fileID: 1263054062414786558, guid: ab2df28e6b41bc942b76aba0d4146713, type: 3}
+  - P1S: {fileID: 3520469649441782499, guid: d69b44576fae79f4f93a748841dee294, type: 3}
+  - P1T: {fileID: 1406127485069424761, guid: 946f3f1df411fb148a73ee000803332b, type: 3}
+  - P1Z: {fileID: 8773735669427673910, guid: 648063171663cd34ba6296dd58ddced1, type: 3}
+  - P2I: {fileID: 4887611876054313707, guid: 604957aa397e94782bab3f07ee9013f4, type: 3}
+  - P2J: {fileID: 5952001633576643552, guid: aa172e94a727f51898c669c6c866f2ba, type: 3}
+  - P2L: {fileID: 8837112813440301880, guid: 26d3a11f99d4cab818a81845b5d9a448, type: 3}
+  - P2O: {fileID: 1263054062414786558, guid: d915b94a21002bd47a859351edfb945c, type: 3}
+  - P2S: {fileID: 3520469649441782499, guid: 359002bb5bc3f466bbaaa69b7c545513, type: 3}
+  - P2T: {fileID: 1406127485069424761, guid: f28b48a8e57913591bec4e97777c402e, type: 3}
+  - P2Z: {fileID: 8773735669427673910, guid: 8de5eed4c5bbc7454a460bb0a152b4fc, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

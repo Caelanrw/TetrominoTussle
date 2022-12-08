@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player2Blocks : MonoBehaviour
 {
     public GameObject tetromino; //parent tetromino game object
-    bool active, droppable, movable, rotatable;
+    bool active, droppable, movable, rotatable, columnCleared;
     int count = 0;
     Gameplay gameControl;
 
@@ -20,7 +20,7 @@ public class Player2Blocks : MonoBehaviour
     void Update()
     {
         
-        if(active) //only allows movement for active tetromino
+        if(active && !Pause.is_paused) //only allows movement for active tetromino
         {
             //movement
             if(Input.GetKeyDown(KeyCode.UpArrow)) //move tetromino up
@@ -32,11 +32,6 @@ public class Player2Blocks : MonoBehaviour
                     tetromino.transform.position += new Vector3(0, 1, 0);
                 }
 
-                foreach(Transform block in tetromino.transform)
-                {
-                Debug.Log(block.transform.position.y);
-                }
-
             }
             if(Input.GetKeyDown(KeyCode.DownArrow)) //move tetromino down
             {
@@ -46,11 +41,6 @@ public class Player2Blocks : MonoBehaviour
                 {
                     tetromino.transform.position += new Vector3(0, -1, 0);
                 }
-
-                foreach(Transform block in tetromino.transform)
-                {
-                Debug.Log(block.transform.position.y);
-                }
             }
 
             //rotation
@@ -58,16 +48,22 @@ public class Player2Blocks : MonoBehaviour
             {
                 tetromino.transform.eulerAngles -= new Vector3(0, 0, 90);
 
-                foreach(Transform block in tetromino.transform)
+                rotatable = RotationCheck(); //check if that rotation was valid
+                if(!rotatable)
                 {
-                Debug.Log(block.transform.position.y);
+                    tetromino.transform.eulerAngles += new Vector3(0, 0, 90); //revert rotation if that rotation was invalid;
                 }
             }
 
             //dropping
             
-            if(Input.GetKey(KeyCode.LeftArrow)) //fast drop
+            if(Input.GetKey(KeyCode.LeftArrow) || count >= Gameplay.timer)
             {
+                if(count >= Gameplay.timer)
+                {
+                    count = 0;
+                }
+
                 droppable = DropCheck();
                 
                 if(droppable)
@@ -82,48 +78,30 @@ public class Player2Blocks : MonoBehaviour
 
                     foreach(Transform block in tetromino.transform)
                     {
-                        gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
+                        columnCleared = gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
+
+                        if(columnCleared)
+                        {
+                            ShiftBlocks((int)Mathf.Round(block.transform.position.x));
+                        }
                     }
 
-                    gameControl.SpawnTetromino(); //spawn new tetromino
+                    gameControl.P2SpawnTetromino(); //spawn new tetromino
                 }
             }
-
-             if((count%20) == 0) //Normal drop
-            {
-                droppable = DropCheck();
-                
-                if(droppable)
-                {
-                    tetromino.transform.position += new Vector3(-1, 0, 0);
-                }
-                else
-                {
-                    active = false; //if not droppable it sets
-
-                    SetBlocks(); //register location of inactive blocks
-
-                    foreach(Transform block in tetromino.transform)
-                    {
-                        gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
-                    }
-
-                    gameControl.SpawnTetromino(); //spawn new tetromino
-                }
-            }
+            count++;
         }
-        count++;
     }
 
     bool DropCheck() //checks if it possible for the tetromino to continue dropping
     {
         foreach(Transform block in tetromino.transform)
         {
-            if(Mathf.Round(block.transform.position.x) == 19) //can't drop if block is at the divider
+            if(Mathf.Round(block.transform.position.x) == 20) //can't drop if block is at the divider
             {
                 return false;
             }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x + 1)] != null) //can't drop if there is a set block in the way
+            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x - 1)] != null) //can't drop if there is a set block in the way
             {
                 return false;
             }
@@ -166,19 +144,53 @@ public class Player2Blocks : MonoBehaviour
         return true;
     }
 
+    bool RotationCheck() //check if rotations are valid
+    {
+        foreach(Transform block in tetromino.transform)
+        {
+            if(Mathf.Round(block.transform.position.y) < 0) //rotation invalid if block is below playfield
+            {
+                return false;
+            }
+            else if(Mathf.Round(block.transform.position.y) > 9) //rotation invalid if block is above playfield
+            {
+                return false;
+            }
+            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] != null) //rotation invalid if block intersects set block
+            {
+                return false;
+            }
+        }
+
+        return true; //if none of above are true the rotation is valid
+    }
+
     void SetBlocks()
     {
         foreach(Transform block in tetromino.transform)
         {
             Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] = block;
         }
+
+        if(Gameplay.timer > 1)
+        {
+            Gameplay.timer -= 0.25; //speed up blocks slightly whenever a tetromino is set
+        }
     }
 
-   /* void DestroyChildren() //Not functional just reference/test code
+    void ShiftBlocks(int column)
     {
-        foreach(Transform block in tetromino.transform)
+        for(int i = 0; i < 10; i++)
         {
-            Destroy(block.gameObject);
+            for(int j = (column + 1); j <= 39; j++) // loops through blocks in columns to right of cleared column
+            {
+                if(Gameplay.blocks[i, j] != null) //if there is a set block in that space move it to the left
+                {
+                    Gameplay.blocks[i, j - 1] = Gameplay.blocks[i, j];
+                    Gameplay.blocks[i, j - 1].gameObject.transform.position += new Vector3(-1, 0, 0);
+                    Gameplay.blocks[i, j] = null;
+                }
+            }
         }
-    }*/
+    }
 }
