@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player1Blocks : MonoBehaviour
+public class Player2Blocks : MonoBehaviour
 {
     public GameObject tetromino; //parent tetromino game object
     bool active, droppable, movable, rotatable;
@@ -19,12 +19,11 @@ public class Player1Blocks : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!Pause.is_paused)
-        {
+        
         if(active) //only allows movement for active tetromino
         {
             //movement
-            if(Input.GetKeyDown(KeyCode.W)) //move tetromino up
+            if(Input.GetKeyDown(KeyCode.UpArrow)) //move tetromino up
             {
                 movable = MovementCheckUp();
 
@@ -33,9 +32,13 @@ public class Player1Blocks : MonoBehaviour
                     tetromino.transform.position += new Vector3(0, 1, 0);
                 }
 
+                foreach(Transform block in tetromino.transform)
+                {
+                Debug.Log(block.transform.position.y);
+                }
+
             }
-            
-            if(Input.GetKeyDown(KeyCode.S)) //move tetromino down
+            if(Input.GetKeyDown(KeyCode.DownArrow)) //move tetromino down
             {
                 movable = MovementCheckDown();
 
@@ -43,34 +46,56 @@ public class Player1Blocks : MonoBehaviour
                 {
                     tetromino.transform.position += new Vector3(0, -1, 0);
                 }
+
+                foreach(Transform block in tetromino.transform)
+                {
+                Debug.Log(block.transform.position.y);
+                }
             }
 
             //rotation
-            if(Input.GetKeyDown(KeyCode.A)) //rotate tetromino 90 degrees
+            if(Input.GetKeyDown(KeyCode.RightArrow)) //rotate tetromino 90 degrees
             {
-                tetromino.transform.eulerAngles -= new Vector3(0, 0, 90); //rotate tetromino
+                tetromino.transform.eulerAngles -= new Vector3(0, 0, 90);
 
-                rotatable = RotationCheck(); //check if that rotation was valid
-                if(!rotatable)
+                foreach(Transform block in tetromino.transform)
                 {
-                    tetromino.transform.eulerAngles += new Vector3(0, 0, 90); //revert rotation if that rotation was invalid;
+                Debug.Log(block.transform.position.y);
                 }
             }
 
             //dropping
             
-            if(Input.GetKey(KeyCode.D) || count >= Gameplay.timer) //fast drop
+            if(Input.GetKey(KeyCode.LeftArrow)) //fast drop
             {
-                if(count >= Gameplay.timer)
-                {
-                    count = 0;
-                }
-
                 droppable = DropCheck();
                 
                 if(droppable)
                 {
-                    tetromino.transform.position += new Vector3(1, 0, 0);
+                    tetromino.transform.position += new Vector3(-1, 0, 0);
+                }
+                else
+                {
+                    active = false; //if not droppable it sets
+
+                    SetBlocks(); //register location of inactive blocks
+
+                    foreach(Transform block in tetromino.transform)
+                    {
+                        gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
+                    }
+
+                    gameControl.SpawnTetromino(); //spawn new tetromino
+                }
+            }
+
+             if((count%20) == 0) //Normal drop
+            {
+                droppable = DropCheck();
+                
+                if(droppable)
+                {
+                    tetromino.transform.position += new Vector3(-1, 0, 0);
                 }
                 else
                 {
@@ -88,7 +113,6 @@ public class Player1Blocks : MonoBehaviour
             }
         }
         count++;
-        }
     }
 
     bool DropCheck() //checks if it possible for the tetromino to continue dropping
@@ -142,37 +166,11 @@ public class Player1Blocks : MonoBehaviour
         return true;
     }
 
-    bool RotationCheck() //check if rotations are valid
-    {
-        foreach(Transform block in tetromino.transform)
-        {
-            if(Mathf.Round(block.transform.position.y) < 0) //rotation invalid if block is below playfield
-            {
-                return false;
-            }
-            else if(Mathf.Round(block.transform.position.y) > 9) //rotation invalid if block is above playfield
-            {
-                return false;
-            }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] != null) //rotation invalid if block intersects set block
-            {
-                return false;
-            }
-        }
-
-        return true; //if none of above are true the rotation is valid
-    }
-
     void SetBlocks()
     {
         foreach(Transform block in tetromino.transform)
         {
             Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] = block;
-        }
-
-        if(Gameplay.timer > 1)
-        {
-            Gameplay.timer -= 0.25; //speed up blocks slightly whenever a tetromino is set
         }
     }
 
