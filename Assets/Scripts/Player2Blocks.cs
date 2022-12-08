@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player1Blocks : MonoBehaviour
+public class Player2Blocks : MonoBehaviour
 {
     public GameObject tetromino; //parent tetromino game object
     bool active, droppable, movable, rotatable, columnCleared;
@@ -19,11 +19,12 @@ public class Player1Blocks : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(active && !Pause.is_paused) //only allows movement for active tetromino while not paused
+        
+        if(active && !Pause.is_paused) //only allows movement for active tetromino
         {
             //movement
-            if(Input.GetKeyDown(KeyCode.W)) //move tetromino up
-            {   
+            if(Input.GetKeyDown(KeyCode.UpArrow)) //move tetromino up
+            {
                 movable = MovementCheckUp();
 
                 if(movable)
@@ -32,8 +33,7 @@ public class Player1Blocks : MonoBehaviour
                 }
 
             }
-            
-            if(Input.GetKeyDown(KeyCode.S)) //move tetromino down
+            if(Input.GetKeyDown(KeyCode.DownArrow)) //move tetromino down
             {
                 movable = MovementCheckDown();
 
@@ -44,9 +44,9 @@ public class Player1Blocks : MonoBehaviour
             }
 
             //rotation
-            if(Input.GetKeyDown(KeyCode.A)) //rotate tetromino 90 degrees
+            if(Input.GetKeyDown(KeyCode.RightArrow)) //rotate tetromino 90 degrees
             {
-                tetromino.transform.eulerAngles -= new Vector3(0, 0, 90); //rotate tetromino
+                tetromino.transform.eulerAngles -= new Vector3(0, 0, 90);
 
                 rotatable = RotationCheck(); //check if that rotation was valid
                 if(!rotatable)
@@ -57,7 +57,7 @@ public class Player1Blocks : MonoBehaviour
 
             //dropping
             
-            if(Input.GetKey(KeyCode.D) || count >= Gameplay.timer)
+            if(Input.GetKey(KeyCode.LeftArrow) || count >= Gameplay.timer)
             {
                 if(count >= Gameplay.timer)
                 {
@@ -68,7 +68,7 @@ public class Player1Blocks : MonoBehaviour
                 
                 if(droppable)
                 {
-                    tetromino.transform.position += new Vector3(1, 0, 0);
+                    tetromino.transform.position += new Vector3(-1, 0, 0);
                 }
                 else
                 {
@@ -86,7 +86,7 @@ public class Player1Blocks : MonoBehaviour
                         }
                     }
 
-                    gameControl.P1SpawnTetromino(); //spawn new tetromino
+                    gameControl.P2SpawnTetromino(); //spawn new tetromino
                 }
             }
             count++;
@@ -97,11 +97,11 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            if(Mathf.Round(block.transform.position.x) == 19) //can't drop if block is at the divider
+            if(Mathf.Round(block.transform.position.x) == 20) //can't drop if block is at the divider
             {
                 return false;
             }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x + 1)] != null) //can't drop if there is a set block in the way
+            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x - 1)] != null) //can't drop if there is a set block in the way
             {
                 return false;
             }
@@ -182,12 +182,12 @@ public class Player1Blocks : MonoBehaviour
     {
         for(int i = 0; i < 10; i++)
         {
-            for(int j = (column - 1); j >= 0; j--) // loops through blocks in columns to left of cleared column
+            for(int j = (column + 1); j <= 39; j++) // loops through blocks in columns to right of cleared column
             {
-                if(Gameplay.blocks[i, j] != null) //if there is a set block in that space move it to the right
+                if(Gameplay.blocks[i, j] != null) //if there is a set block in that space move it to the left
                 {
-                    Gameplay.blocks[i, j + 1] = Gameplay.blocks[i, j];
-                    Gameplay.blocks[i, j + 1].gameObject.transform.position += new Vector3(1, 0, 0);
+                    Gameplay.blocks[i, j - 1] = Gameplay.blocks[i, j];
+                    Gameplay.blocks[i, j - 1].gameObject.transform.position += new Vector3(-1, 0, 0);
                     Gameplay.blocks[i, j] = null;
                 }
             }
