@@ -19,7 +19,8 @@ public class Player1Blocks : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!Pause.is_paused)
+        {
         if(active) //only allows movement for active tetromino
         {
             //movement
@@ -105,6 +106,7 @@ public class Player1Blocks : MonoBehaviour
             }
         }
         count++;
+        }
     }
 
     bool DropCheck() //checks if it possible for the tetromino to continue dropping
