@@ -5,8 +5,8 @@ using UnityEngine;
 public class Player1Blocks : MonoBehaviour
 {
     public GameObject tetromino; //parent tetromino game object
-    bool active, droppable, movable, rotatable, columnCleared;
-    int count = 0;
+    bool active, droppable, movable, rotatable, cleared;
+    int count = 0, columnsCleared;
     Gameplay gameControl;
 
     // Start is called before the first frame update
@@ -59,6 +59,8 @@ public class Player1Blocks : MonoBehaviour
             
             if(Input.GetKey(KeyCode.D) || count >= Gameplay.timer)
             {
+                columnsCleared = 0;
+
                 if(count >= Gameplay.timer)
                 {
                     count = 0;
@@ -78,12 +80,18 @@ public class Player1Blocks : MonoBehaviour
 
                     foreach(Transform block in tetromino.transform)
                     {
-                        columnCleared = gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
+                        cleared = gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
 
-                        if(columnCleared)
+                        if(cleared)
                         {
                             ShiftBlocks((int)Mathf.Round(block.transform.position.x));
+                            columnsCleared ++;
                         }
+                    }
+
+                    if(columnsCleared > 2) // if 3 or 4 columns cleared at once call attack function
+                    {
+                        Attack(columnsCleared);
                     }
 
                     gameControl.P1SpawnTetromino(); //spawn new tetromino
@@ -188,6 +196,22 @@ public class Player1Blocks : MonoBehaviour
                 {
                     Gameplay.blocks[i, j + 1] = Gameplay.blocks[i, j];
                     Gameplay.blocks[i, j + 1].gameObject.transform.position += new Vector3(1, 0, 0);
+                    Gameplay.blocks[i, j] = null;
+                }
+            }
+        }
+    }
+
+    void Attack(int columns)
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            for(int j = 39; j >= 0; j--) // loops through blocks in columns to right of cleared column
+            {
+                if(Gameplay.blocks[i, j] != null) //if there is a set block in that space move it to the left
+                {
+                    Gameplay.blocks[i, j + (columns - 2)] = Gameplay.blocks[i, j];
+                    Gameplay.blocks[i, j + (columns - 2)].gameObject.transform.position += new Vector3((columns - 2), 0, 0);
                     Gameplay.blocks[i, j] = null;
                 }
             }
