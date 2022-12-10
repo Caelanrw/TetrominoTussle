@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player1Blocks : MonoBehaviour
 {
@@ -8,12 +9,14 @@ public class Player1Blocks : MonoBehaviour
     bool active, droppable, movable, rotatable, cleared;
     int count = 0, columnsCleared;
     Gameplay gameControl;
+    public string Loss;
 
     // Start is called before the first frame update
     void Start()
     {
         active = true;
         gameControl = FindObjectOfType<Gameplay>(); 
+        Loss = "Player2Win";
     }
 
     // Update is called once per frame
@@ -122,13 +125,16 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            if(Mathf.Round(block.transform.position.y) == 9)
+            if(block.transform.position.x >= 0) //only check blocks that are in bounds to avoid errors
             {
-                return false;
-            }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y + 1), (int)Mathf.Round(block.transform.position.x)] != null)
-            {
-                return false;
+                if(Mathf.Round(block.transform.position.y) == 9)
+                {
+                    return false;
+                }
+                else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y + 1), (int)Mathf.Round(block.transform.position.x)] != null)
+                {
+                    return false;
+                }
             }
         }
 
@@ -139,13 +145,16 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            if(Mathf.Round(block.transform.position.y) == 0)
+            if(block.transform.position.x >= 0) //only check blocks that are in bounds to avoid errors
             {
-                return false;
-            }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y - 1), (int)Mathf.Round(block.transform.position.x)] != null)
-            {
-                return false;
+                if(Mathf.Round(block.transform.position.y) == 0)
+                {
+                    return false;
+                }
+                else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y - 1), (int)Mathf.Round(block.transform.position.x)] != null)
+                {
+                    return false;
+                }
             }
         }
 
@@ -177,7 +186,14 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] = block;
+            if((int)Mathf.Round(block.transform.position.x) >= 0) //checks if the blocks have reached the end of the screen
+            {
+                Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] = block;
+            }
+            else
+            {
+                SceneManager.LoadScene(Loss);
+            }
         }
 
         if(Gameplay.timer > 1)
