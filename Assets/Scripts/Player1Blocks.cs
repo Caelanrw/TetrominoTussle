@@ -1,31 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player1Blocks : MonoBehaviour
 {
     public GameObject tetromino; //parent tetromino game object
-    bool active, droppable, movable, rotatable;
-    int count = 0;
+    bool active, droppable, movable, rotatable, cleared;
+    int count = 0, columnsCleared;
     Gameplay gameControl;
+    public string Loss;
 
     // Start is called before the first frame update
     void Start()
     {
         active = true;
         gameControl = FindObjectOfType<Gameplay>(); 
+        Loss = "Player2Win";
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!Pause.is_paused)
-        {
-        if(active) //only allows movement for active tetromino
+        if(active && !Pause.is_paused) //only allows movement for active tetromino while not paused
         {
             //movement
             if(Input.GetKeyDown(KeyCode.W)) //move tetromino up
-            {
+            {   
                 movable = MovementCheckUp();
 
                 if(movable)
@@ -59,8 +60,10 @@ public class Player1Blocks : MonoBehaviour
 
             //dropping
             
-            if(Input.GetKey(KeyCode.D) || count >= Gameplay.timer) //fast drop
+            if(Input.GetKey(KeyCode.D) || count >= Gameplay.timer)
             {
+                columnsCleared = 0;
+
                 if(count >= Gameplay.timer)
                 {
                     count = 0;
@@ -80,14 +83,24 @@ public class Player1Blocks : MonoBehaviour
 
                     foreach(Transform block in tetromino.transform)
                     {
-                        gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
+                        cleared = gameControl.ClearColumn((int)Mathf.Round(block.transform.position.x));
+
+                        if(cleared)
+                        {
+                            ShiftBlocks((int)Mathf.Round(block.transform.position.x));
+                            columnsCleared ++;
+                        }
                     }
 
-                    gameControl.SpawnTetromino(); //spawn new tetromino
+                    if(columnsCleared > 2) // if 3 or 4 columns cleared at once call attack function
+                    {
+                        Attack(columnsCleared);
+                    }
+
+                    gameControl.P1SpawnTetromino(); //spawn new tetromino
                 }
             }
-        }
-        count++;
+            count++;
         }
     }
 
@@ -112,13 +125,16 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            if(Mathf.Round(block.transform.position.y) == 9)
+            if(block.transform.position.x >= 0) //only check blocks that are in bounds to avoid errors
             {
-                return false;
-            }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y + 1), (int)Mathf.Round(block.transform.position.x)] != null)
-            {
-                return false;
+                if(Mathf.Round(block.transform.position.y) == 9)
+                {
+                    return false;
+                }
+                else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y + 1), (int)Mathf.Round(block.transform.position.x)] != null)
+                {
+                    return false;
+                }
             }
         }
 
@@ -129,13 +145,16 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            if(Mathf.Round(block.transform.position.y) == 0)
+            if(block.transform.position.x >= 0) //only check blocks that are in bounds to avoid errors
             {
-                return false;
-            }
-            else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y - 1), (int)Mathf.Round(block.transform.position.x)] != null)
-            {
-                return false;
+                if(Mathf.Round(block.transform.position.y) == 0)
+                {
+                    return false;
+                }
+                else if(Gameplay.blocks[(int)Mathf.Round(block.transform.position.y - 1), (int)Mathf.Round(block.transform.position.x)] != null)
+                {
+                    return false;
+                }
             }
         }
 
@@ -167,7 +186,14 @@ public class Player1Blocks : MonoBehaviour
     {
         foreach(Transform block in tetromino.transform)
         {
-            Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] = block;
+            if((int)Mathf.Round(block.transform.position.x) >= 0) //checks if the blocks have reached the end of the screen
+            {
+                Gameplay.blocks[(int)Mathf.Round(block.transform.position.y), (int)Mathf.Round(block.transform.position.x)] = block;
+            }
+            else
+            {
+                SceneManager.LoadScene(Loss);
+            }
         }
 
         if(Gameplay.timer > 1)
@@ -176,11 +202,35 @@ public class Player1Blocks : MonoBehaviour
         }
     }
 
-   /* void DestroyChildren() //Not functional just reference/test code
+    void ShiftBlocks(int column)
     {
-        foreach(Transform block in tetromino.transform)
+        for(int i = 0; i < 10; i++)
         {
-            Destroy(block.gameObject);
+            for(int j = (column - 1); j >= 0; j--) // loops through blocks in columns to left of cleared column
+            {
+                if(Gameplay.blocks[i, j] != null) //if there is a set block in that space move it to the right
+                {
+                    Gameplay.blocks[i, j + 1] = Gameplay.blocks[i, j];
+                    Gameplay.blocks[i, j + 1].gameObject.transform.position += new Vector3(1, 0, 0);
+                    Gameplay.blocks[i, j] = null;
+                }
+            }
         }
-    }*/
+    }
+
+    void Attack(int columns)
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            for(int j = 39; j >= 0; j--) // loops through blocks in columns to right of cleared column
+            {
+                if(Gameplay.blocks[i, j] != null) //if there is a set block in that space move it to the left
+                {
+                    Gameplay.blocks[i, j + (columns - 2)] = Gameplay.blocks[i, j];
+                    Gameplay.blocks[i, j + (columns - 2)].gameObject.transform.position += new Vector3((columns - 2), 0, 0);
+                    Gameplay.blocks[i, j] = null;
+                }
+            }
+        }
+    }
 }
