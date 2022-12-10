@@ -33,7 +33,7 @@ public class Gameplay : MonoBehaviour
         switch(randomTetromino)
         {
             case(1):
-                Instantiate(P1O, new Vector3((float)0.5, (float)5.5, 0), Quaternion.identity);
+                Instantiate(P1O, new Vector3((float)-0.5, (float)5.5, 0), Quaternion.identity);
                 break;
             case(2):
                 Instantiate(P1J, new Vector3(0, 5, 0), Quaternion.identity);
@@ -64,7 +64,7 @@ public class Gameplay : MonoBehaviour
         switch(randomTetromino)
         {
             case(1):
-                Instantiate(P2O, new Vector3((float)38.5, (float)5.5, 0), Quaternion.identity);
+                Instantiate(P2O, new Vector3((float)39.5, (float)5.5, 0), Quaternion.identity);
                 break;
             case(2):
                 Instantiate(P2J, new Vector3(39, 5, 0), Quaternion.identity);
