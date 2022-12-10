@@ -12,6 +12,7 @@ public class Gameplay : MonoBehaviour
     void Start()
     {
         timer = 20;
+         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 20; //sets game frame rate
         P1SpawnTetromino();
         P2SpawnTetromino();
@@ -32,7 +33,7 @@ public class Gameplay : MonoBehaviour
         switch(randomTetromino)
         {
             case(1):
-                Instantiate(P1O, new Vector3((float)0.5, (float)5.5, 0), Quaternion.identity);
+                Instantiate(P1O, new Vector3((float)-0.5, (float)5.5, 0), Quaternion.identity);
                 break;
             case(2):
                 Instantiate(P1J, new Vector3(0, 5, 0), Quaternion.identity);
@@ -63,7 +64,7 @@ public class Gameplay : MonoBehaviour
         switch(randomTetromino)
         {
             case(1):
-                Instantiate(P2O, new Vector3((float)38.5, (float)5.5, 0), Quaternion.identity);
+                Instantiate(P2O, new Vector3((float)39.5, (float)5.5, 0), Quaternion.identity);
                 break;
             case(2):
                 Instantiate(P2J, new Vector3(39, 5, 0), Quaternion.identity);
@@ -88,19 +89,23 @@ public class Gameplay : MonoBehaviour
 
     public bool ClearColumn(int column) //clear complete columns
     {
-        for(int i = 0; i < 10; i++) //check if whole column is complete
+        if(column >= 0 &&  column <= 39) //only runs on blocks in bounds to avoid errors
         {
-            if(blocks[i, column] == null)
+            for(int i = 0; i < 10; i++) //check if whole column is complete
             {
-                return false; //leave function if there is no block in any spot in the column
+                if(blocks[i, column] == null)
+                {
+                    return false; //leave function if there is no block in any spot in the column
+                }
             }
-        }
 
-        for(int i = 0; i < 10; i++)
-        {
-            Destroy(blocks[i, column].gameObject); //destroy the blocks in the completed column
-            blocks[i, column] = null;
+            for(int i = 0; i < 10; i++)
+            {
+                Destroy(blocks[i, column].gameObject); //destroy the blocks in the completed column
+                blocks[i, column] = null;
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 }
