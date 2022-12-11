@@ -34,6 +34,8 @@ Once you have installed the Unity Hub and Editor, select File in the top left co
 
 ##First player to fill up their board loses!
 
+##Complete 3 or 4 columns at a time to move all the blocks towards your opponent!
+
 
 Team Name: Team Tetris 
 Team Members: Colin McDowell, Jack Crowley, Caelan Wong
