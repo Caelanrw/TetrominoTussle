@@ -2,7 +2,7 @@
 Welcome to Tetromino Tussle! This is a challenging, 2-player falling block game that is fun for all ages! Follow the instructions below to build Tetromino Tussle on your own computer.
 
 # Installing The Game
-##Clone the repository.
+## Clone the repository.
 To clone this repository, simply enter the following in your terminal:
 
 	git clone https://github.com/clnmcdowell/TetrisVs.git
