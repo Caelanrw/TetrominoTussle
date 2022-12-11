@@ -16,16 +16,16 @@ public class TitlePage : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene(Game);
+        SceneManager.LoadScene(Game); //load game when button pressed
     }
 
     public void QuitGame()
     {
-        Application.Quit();
+        Application.Quit(); //close game when button pressed
     }
 
     public void ControlScene()
     {
-        SceneManager.LoadScene(Controls);
+        SceneManager.LoadScene(Controls); //load control screen when button pressed
     }
 }

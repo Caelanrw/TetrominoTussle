@@ -15,37 +15,36 @@ public class Pause : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        is_paused=false;
+        is_paused = false; //initially the game will not be paused
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape)) //if escape is pressed
         {
-            if (is_paused)
+            if (is_paused) //resume game if paused
             {
                 ResumeGame();
             }
-            else
+            else //pause game if unpaused
             {
-                is_paused=true;
-                pauseMenu.SetActive(true);
+                is_paused = true;
+                pauseMenu.SetActive(true); //makes pause menu object active
             }
             
         }
-        
     }
 
     public void ResumeGame()
     {
-        is_paused=false;
+        is_paused = false;
         pauseMenu.SetActive(false);
     }
 
     public void ReturnToMainMenu()
     {
-        SceneManager.LoadScene(mainMenuScene);
+        SceneManager.LoadScene(mainMenuScene); //loads main menu scene if main menu button is pressed
     }
 }
