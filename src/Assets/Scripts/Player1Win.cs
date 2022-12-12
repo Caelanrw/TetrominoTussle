@@ -10,17 +10,10 @@ public class Player1Win : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void ReturnToMainMenu()
     {
-        SceneManager.LoadScene(mainMenuScene);
+        SceneManager.LoadScene(mainMenuScene); //go to main menu if button is pressed
     }
 }
