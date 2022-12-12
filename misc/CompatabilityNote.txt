@@ -1,0 +1,4 @@
+This game has only been tested on Windows device. You can chageUnity's build
+settings to build it for Mac but we can not verify if it will work correctly.
+The BuiltVersion folder contains a built version of the game and an executable file
+to run the game. This executable may not work on every computer.
